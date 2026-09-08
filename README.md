@@ -7,6 +7,19 @@ One agent driving two of these bridges moves data and orchestrates work between 
 without an integration having been built in advance for that pair. That is the whole idea, and
 it works today.
 
+## Why
+
+Civic tech platforms have never worked well together. Every organisation that wanted two tools to
+cooperate has paid for a bespoke integration, and most of those integrations died with the
+project that funded them. The field ends up as a set of capable, isolated tools: a city can run
+its deliberation in one and its vote in another, and still carry the record between them by hand.
+
+What changed is the cost of a client. A complete, tested command-line client for a platform's API
+used to be weeks of work that nobody would fund for a single integration. With a coding agent it
+is hours. That makes it reasonable for every platform to have one — and once two platforms do, an
+agent can operate both, so the integration nobody would have paid to build no longer needs
+building.
+
 ## The bridges
 
 | Platform | Bridge | Talks to | Licence |
@@ -68,6 +81,18 @@ transform script rather than translating ad hoc, so the mapping can be reviewed 
 Where meaning is genuinely absent at the source, no tooling conjures it. An agent can flag the
 gap; closing it is semantic work.
 
+## The goal
+
+Not a toolkit maintained by one company. The goal is that every civic-tech platform has an open
+bridge, maintained by the community that maintains the platform, the way client libraries work
+everywhere else in software. Then interoperability stops being a project that has to be funded
+each time and becomes a property: any two platforms with bridges can be composed, by an agent or
+by a plain script, without their communities having to coordinate with each other first.
+
+These four are a starting set, and evidence that the pattern holds across very different
+architectures: a GraphQL API, a REST API, and a Rails application with no complete operator API
+of its own. We would rather each bridge ended up in its own platform's repository than in ours.
+
 ## Where this sits next to standards work
 
 Standards efforts solve a different problem: shared semantics and portable formats, so that
@@ -93,8 +118,7 @@ host's licence.
 
 Contributing a bridge upstream does not move its copyright. Neither CONSUL nor Decidim asks
 contributors for an assignment, so the same code can live here and in a platform's own
-repository at the same time. We would rather these bridges ended up in the platforms' own trees
-than in ours.
+repository at the same time.
 
 ## Build a bridge for your platform
 
