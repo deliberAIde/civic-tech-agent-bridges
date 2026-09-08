@@ -5,10 +5,11 @@ mostly ordinary good API practice, with a bias toward the things that break agen
 
 ## The short version
 
-An agent is a client that has never read your documentation the way a human would, cannot see
-your interface, and will not guess correctly twice. It needs three things from an API: a way to
-find out what operations exist, a predictable shape for every response, and errors that say what
-to do next.
+An agent is a client that cannot see your interface and has to work out what to do from what the
+API tells it. Three things make that possible: a way to find out which operations exist, a
+predictable shape for every response, and errors that say what to do next. Most APIs already do
+some of this; these notes are about which parts turned out to matter most when we built the
+bridges.
 
 ## What makes a bridge easy to build
 
@@ -26,10 +27,11 @@ only by URL shape, every route change silently breaks clients.
 platform's own users talk about: a process, a phase, a proposal, a conversation. Bridges that
 have to assemble a domain object out of four generic endpoints are brittle and hard to explain.
 
-**One way to authenticate, and it works headlessly.** Token or client-credentials authentication
-that a machine can obtain without a browser. Interactive-only login pushes bridges into
-scripted form posts and session cookies, which is what `consul-cli` had to do for CONSUL and it
-is by far the most fragile part of that bridge.
+**Authentication a machine can complete on its own.** Token or client-credentials
+authentication obtainable without a browser. Where only an interactive login exists, a bridge has
+to drive the sign-in flow and hold a session cookie, which works but is the part most likely to
+break on an upgrade. Decidim's system-panel API credentials are a good example of the pattern
+that avoids this.
 
 ## What makes a bridge safe to run
 

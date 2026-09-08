@@ -41,20 +41,22 @@ regenerated when the upstream API changes, so drift is a rebuild rather than a r
 
 **If it does not, wrap what exists.** [CLI-Anything](https://github.com/HKUDS/CLI-Anything) (MIT)
 turns an existing software surface into an agent-native CLI and is a reasonable starting point.
-`consul-cli` went further because CONSUL has no public write API: it pairs a Python client with
-a small token-authenticated Rails engine mounted in the application, which exposes the
-platform's own models, routes and rake tasks. That engine is AGPL-3.0, like its host.
+`consul-cli` went further because CONSUL does not expose a complete operator API: it pairs a
+Python client with a small token-authenticated Rails engine mounted in the application, which
+reaches the platform's own models, routes and rake tasks rather than reimplementing them. That
+engine is AGPL-3.0, like its host.
 
-**Budget a day for a first useful version, then weeks of edges.** The generated surface arrives
-quickly. What takes the time is authentication that works headlessly, pagination, the operations
-whose real behaviour differs from the documentation, and the failure modes you only find by
-running the thing against a real installation.
+**Budget about a day for a first useful version, then weeks of edges.** In one timed run,
+building a read-and-write Decidim CLI this way took 49 minutes to a working, tested state. What
+takes the remaining time is headless authentication, pagination, schema differences between
+versions, and the behaviours you only discover by running against a real installation. The
+repository tells you what exists; only a live server tells you how to call it.
 
 ## Rules worth keeping
 
-- **Do not fork the platform.** A bridge that requires a patched installation is a fork with
-  extra steps. Where in-application code is unavoidable, make it a mountable engine or plugin
-  under the platform's own licence, as small as it can be.
+- **Do not fork the platform.** A bridge that only works against a patched installation is hard
+  for anyone else to adopt. Where in-application code is unavoidable, make it a mountable engine
+  or plugin under the platform's own licence, and keep it as small as it can be.
 - **Never invent domain behaviour.** A bridge calls the platform's own logic. If the CLI
   implements a validation the platform does not have, the two will disagree eventually, and the
   platform is right.
@@ -72,4 +74,4 @@ repository is infrastructure. Licence the client permissively so the platform ca
 without a licence conflict, and open the pull request.
 
 See [Designing an API an agent can drive](api-design-for-agent-bridges.md) for the other half:
-what a platform can change so that building a bridge stops being work.
+which API choices made the bridges easy or hard to build.
