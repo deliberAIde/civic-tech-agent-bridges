@@ -1,24 +1,31 @@
 # Civic tech agent-bridges toolkit
 
 Open-source command-line clients that let an AI agent operate a civic-tech platform through the
-platform's own API.
-
-One agent driving two of these bridges moves data and orchestrates work between two platforms,
-without an integration having been built in advance for that pair. That is the whole idea, and
-it works today.
+platform's own API. One agent driving two of these bridges moves data and orchestrates work
+between two platforms, with no shared standard and no integration built in advance for that
+pair.
 
 ## Why
 
-Civic tech platforms have never worked well together. Every organisation that wanted two tools to
-cooperate has paid for a bespoke integration, and most of those integrations died with the
-project that funded them. The field ends up as a set of capable, isolated tools: a city can run
-its deliberation in one and its vote in another, and still carry the record between them by hand.
+Interoperability remains civic tech's unfinished business. Open311 was widely adopted but is no
+longer maintained. Germany's OParl standard has not been updated since 2018 and is implemented
+only partially. The Scottish Government's 2024 market research named the lack of interoperability
+between participation tools a defining constraint of the field. Serious standards work is
+underway: [Metagov's Interoperable Deliberative Tools](https://metagov.org/projects/interop)
+effort, in which Decidim participates, and Decidim's own CSV export and import work are the most
+visible current examples.
 
-What changed is the cost of a client. A complete, tested command-line client for a platform's API
-used to be weeks of work that nobody would fund for a single integration. With a coding agent it
-is hours. That makes it reasonable for every platform to have one — and once two platforms do, an
-agent can operate both, so the integration nobody would have paid to build no longer needs
-building.
+Two things have changed. Coding agents can now generate a working CLI from any well-structured
+API in under an hour. And general-purpose agents can drive such CLIs to move data and
+orchestrate workflows across platforms. A platform with a CLI is operable by an agent; two
+platforms with CLIs can be made to work together by an agent; and the CLI itself is a
+deterministic, reviewable artefact that is cheap to build and cheap to keep current.
+
+That does not replace standards work. The agent layer dissolves the problems of format and
+transport: an agent reads both schemas and maps between them. It does not dissolve shared
+semantics, provenance, or the safeguards that responsible agent access requires. Those still
+need standards and coordination, and the bridges are built to sit next to that work rather than
+in place of it.
 
 ## The bridges
 
@@ -34,8 +41,13 @@ pip install polis-cli decidim-cli consul-democracy-cli deliberaide-cli
 ```
 
 Each bridge speaks to a platform's own API. None of them forks a platform, replaces any of its
-logic, or requires it to change. Early-stage and openly incomplete: a bridge covers what its
-platform's API exposes, which differs a lot between platforms and versions.
+logic, or requires it to change. Together with [CLI-Anything](https://github.com/HKUDS/CLI-Anything),
+a third-party open-source tool that generates such clients, and an API-design guide for
+agent-ready platforms, they form an emerging and openly incomplete toolkit: a bridge covers what
+its platform's API exposes, which differs a lot between platforms and versions.
+
+deliberAIde itself is not yet open source; it is an early-stage platform in its pilot phase. The
+bridges and this toolkit are.
 
 ## In practice
 
@@ -70,37 +82,28 @@ end, with nothing built in advance between them.
 
 **Build time.** An agent writes the bridge once, from an API description or a codebase. The
 result is a deterministic, versioned, reviewable artefact that behaves identically on every run.
-With tools like [CLI-Anything](https://github.com/HKUDS/CLI-Anything) (MIT, third-party) this is
-hours of work, not weeks. In one timed run, a read-and-write Decidim CLI reached a working,
-tested state in 49 minutes.
+With a tool like CLI-Anything this takes under an hour for a first working version; in one timed
+run, a read-and-write Decidim CLI reached a working, tested state in 49 minutes.
 
-**Run time.** An agent drives the bridges and maps between them: read from one platform,
-reshape, write into another. For records that have to be auditable, the agent emits a reusable
-transform script rather than translating ad hoc, so the mapping can be reviewed and replayed.
+**Run time.** An agent drives the bridges and converts between them: fetch from one platform,
+reshape, write into another. No shared format is needed, because the agent reads both schemas
+and maps the fields. For audit-grade records the agent emits a reusable transform script rather
+than translating ad hoc, so intermediate files and logs form the audit trail and the mapping can
+be reviewed and replayed.
 
-Where meaning is genuinely absent at the source, no tooling conjures it. An agent can flag the
-gap; closing it is semantic work.
+Where meaning is missing at the source, no tooling and no standard conjures it. The agent's job
+there is to flag the gap.
 
-## The goal
+## What still needs standards and coordination
 
-Not a toolkit maintained by one company. The goal is that every civic-tech platform has an open
-bridge, maintained by the community that maintains the platform, the way client libraries work
-everywhere else in software. Then interoperability stops being a project that has to be funded
-each time and becomes a property: any two platforms with bridges can be composed, by an agent or
-by a plain script, without their communities having to coordinate with each other first.
-
-These four are a starting set, and evidence that the pattern holds across very different
-architectures: a GraphQL API, a REST API, and a Rails application with no complete operator API
-of its own. We would rather each bridge ended up in its own platform's repository than in ours.
-
-## Where this sits next to standards work
-
-Standards efforts solve a different problem: shared semantics and portable formats, so that
-records mean the same thing across tools. [Metagov's Interoperable Deliberative
-Tools](https://metagov.org/projects/interop) is the current reference point, and Decidim
-participates in it. Bridges solve reachability: making a platform operable by an agent right
-now, on the API it already has. The two compose well, and neither removes the need for the
-other.
+- **Shared semantics.** A format can be mapped; a concept that one platform records and another
+  does not cannot be translated into existence. This is the work standards efforts do.
+- **Provenance.** Which platform, which version, which operator, which transformation. Bridges
+  keep this visible in their envelopes and transform scripts; a shared vocabulary for it would
+  be better.
+- **Safeguards for agent access.** API scopes, moderation, rate limits, and accountability for
+  agent-mediated contributions. Decidim's action logging for API users is an existing answer
+  worth copying.
 
 ## Licensing: why the clients are permissive
 
@@ -118,7 +121,8 @@ host's licence.
 
 Contributing a bridge upstream does not move its copyright. Neither CONSUL nor Decidim asks
 contributors for an assignment, so the same code can live here and in a platform's own
-repository at the same time.
+repository at the same time. We would rather each bridge ended up in its own platform's
+repository than in ours.
 
 ## Build a bridge for your platform
 
