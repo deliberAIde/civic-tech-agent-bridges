@@ -24,20 +24,34 @@ Each bridge speaks to a platform's own API. None of them forks a platform, repla
 logic, or requires it to change. Early-stage and openly incomplete: a bridge covers what its
 platform's API exposes, which differs a lot between platforms and versions.
 
-## What it looks like in practice
+## In practice
 
-One organiser, one general-purpose agent, three platforms, one democratic record:
+Each bridge exposes its platform's own lifecycle as commands, with named profiles for instances
+and `--json` on everything:
 
-1. A citizens' assembly deliberates. The agent asks **deliberAIde** for the recommendation
-   package, grounded in the transcript with citations.
-2. The room becomes the assembly's final plenary. The agent creates a **Voxit** conversation
-   from those recommendations, and participants vote from their phones.
-3. The agent reads the vote, classifies what was adopted, what carries conditions and what
-   stays contested, and publishes the package into **Munich CONSUL** for wider public input.
-4. Later, the agent reconciles all three records without erasing dissent.
+```bash
+decidim --json -p city  process create "Mobility plan 2030"
+polis   --json -p vote  convo create "Final vote on the recommendations"
+polis   --json -p vote  seed <conversation-id> statements.txt
+consul  --json -p city  proposals list --where '{"projekt_phase_id": 4}'
+```
 
-Each platform was driven through its own API, by one agent, with nothing built in advance
-between them.
+An operator can run these by hand, which is what keeps them debuggable. An agent can chain them,
+which is what makes platforms interoperate: because every command answers in the same envelope
+shape, moving between two platforms needs no adapter written in advance for that pair.
+
+Typical shapes this enables:
+
+- take the output of a deliberation on one platform and open a vote on it on another;
+- publish the result of a decision into a public participation portal, then read the public
+  response back for analysis;
+- run one reporting query across several installations of different platforms;
+- move a process between instances, or between platforms, with the transformation included.
+
+A worked example: a deliberation tool holds the reasoning and its evidence, a voting tool runs
+the decision, and a participation portal opens the outcome to a wider public. Three platforms,
+three bridges, one agent carrying the record from one to the next and reconciling them at the
+end, with nothing built in advance between them.
 
 ## Two layers
 
