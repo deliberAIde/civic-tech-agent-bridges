@@ -46,9 +46,6 @@ a third-party open-source tool that generates such clients, and an API-design gu
 agent-ready platforms, they form an emerging and openly incomplete toolkit: a bridge covers what
 its platform's API exposes, which differs a lot between platforms and versions.
 
-deliberAIde itself is not yet open source; it is an early-stage platform in its pilot phase. The
-bridges and this toolkit are.
-
 ## In practice
 
 Each bridge exposes its platform's own lifecycle as commands, with named profiles for instances
@@ -65,18 +62,13 @@ An operator can run these by hand, which is what keeps them debuggable. An agent
 which is what makes platforms interoperate: because every command answers in the same envelope
 shape, moving between two platforms needs no adapter written in advance for that pair.
 
-Typical shapes this enables:
+Example workflows this enables:
 
 - take the output of a deliberation on one platform and open a vote on it on another;
 - publish the result of a decision into a public participation portal, then read the public
   response back for analysis;
 - run one reporting query across several installations of different platforms;
 - move a process between instances, or between platforms, with the transformation included.
-
-A worked example: a deliberation tool holds the reasoning and its evidence, a voting tool runs
-the decision, and a participation portal opens the outcome to a wider public. Three platforms,
-three bridges, one agent carrying the record from one to the next and reconciling them at the
-end, with nothing built in advance between them.
 
 ## Two layers
 
@@ -104,25 +96,6 @@ there is to flag the gap.
 - **Safeguards for agent access.** API scopes, moderation, rate limits, and accountability for
   agent-mediated contributions. Decidim's action logging for API users is an existing answer
   worth copying.
-
-## Licensing: why the clients are permissive
-
-Two kinds of code live in these repositories, licensed differently on purpose.
-
-**The clients are Apache-2.0.** A client that speaks HTTP or GraphQL to a running instance
-contains none of that platform's source code, so it is an independent work. Permissive licensing
-means a platform can vendor it into its own repository, whether that is AGPL-3.0 (Pol.is,
-CONSUL, Decidim) or EUPL-1.2 (Voxit), since permissive code can be combined into a copyleft
-project but not the other way round. The licence was chosen for the platforms' convenience.
-
-**The in-application engines are AGPL-3.0-or-later.** `consul-admin-api` and `decidim-admin-api`
-are Rails engines that load into and run as part of an AGPL application, so they follow their
-host's licence.
-
-Contributing a bridge upstream does not move its copyright. Neither CONSUL nor Decidim asks
-contributors for an assignment, so the same code can live here and in a platform's own
-repository at the same time. We would rather each bridge ended up in its own platform's
-repository than in ours.
 
 ## Build a bridge for your platform
 
